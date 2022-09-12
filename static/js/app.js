@@ -1,15 +1,18 @@
 function guessed(guessRaw) {
     //replace display with selected value
-    console.log("checkpoint: option changed");
+    console.log("checkpoint: guess made");
     guess = SPAG_remover(guessRaw);
-    guess_counter++;
 
     if (guess == answerKey){
+        guess_counter++;
         congrats = "you're right! well done. And it only took you "+ guess_counter + " goes."
-        // replace the contents of the main panel with the COMPLETE tags list
+        // replace the contents of the proximity panel with the congrats string
         d3.select('#proximity').html(congrats);
         // replace the contents of the main panel with the COMPLETE tags list
         d3.select('#keywords').html(answer['tags']);
+        // replace the contents of the side panel with the correct solution
+        list_of_guesses = `<p>${guess_counter}: ${film_dict[guess]['punc_name']} 100% similarity</p>${list_of_guesses}`;
+        d3.select('#guesses').html(list_of_guesses);
     }    
     else{
         try{
@@ -19,18 +22,15 @@ function guessed(guessRaw) {
             var guess_tags = film_dict[guess]['tags'];
 
             var common_tags = answer_tags.filter(value => guess_tags.includes(value));
-            console.log(common_tags);
+            
+            guess_counter++;
             
             var similarity = Math.round(common_tags.length*100/(answer_tags.length));
-            // replace the contents of the main panel with the COMPLETE tags list
-            list_of_guesses = "<p>" + film_dict[guess]['punc_name'] + " " + similarity + "%" + "</p>" + list_of_guesses;
+            // replace the contents of the side panel with the new guess list
+            list_of_guesses = `<p>${guess_counter}: ${film_dict[guess]['punc_name']} ${similarity}% similarity</p>${list_of_guesses}`;
             d3.select('#guesses').html(list_of_guesses);
 
-            // print(f"{similarity}% match! they share the following tags (repitions ommitted):\n")
-            // print(common_tags.difference(tag_list))
-            // tag_list = set(common_tags.union(tag_list))
             tag_list = common_tags.concat(tag_list.filter((item) => common_tags.indexOf(item) < 0));
-            console.log(tag_list);
             // replace the contents of the main panel with the new tags list
             d3.select('#keywords').html(tag_list);
 
@@ -38,7 +38,6 @@ function guessed(guessRaw) {
             // replace the contents of the proximity panel with the new proximity
             d3.select('#proximity').html(progress + "% of tags revealed");
 
-            // print(f"\nTotal progress: you have found {progress}% of the tags")
         }
         catch (err) {
             // replace the contents of the filmNotFound panel with the alert
@@ -167,9 +166,17 @@ function hint(){
 }
 
 function megahint(){
+    // replace the contents of the main panel with the COMPLETE list
+        d3.select('#keywords').html(answer['tags']);
+    console.log("megahint")
 }
 
 function quit(){
+    // replace the contents of the main panel with the COMPLETE list
+        d3.select('#keywords').html(answer['tags']);
+        // replace the contents of the proximity panel with the congrats string
+        quitString = `<p>oh, that's a shame, it was ${randKey}</p>`
+        d3.select('#proximity').html(quitString);
 }
 
 function getAnswer(){
@@ -190,7 +197,6 @@ function getAnswer(){
 
 
 function SPAG_remover(word){
-    console.log(word);
     // method to remove punctuation from text, in order to make the game less annoyingly precise.
     // also removes common words 'the' and 'and'.
     cleanWord = word.toLowerCase().replace(/the /gi, '').replace(/and /gi, '').replace(/[.,\/#!$%\^&\*;:{}=\-_`'~()]/g,"").replace(/\s{2,}/g," ");    
@@ -198,7 +204,6 @@ function SPAG_remover(word){
     return cleanWord;
 }
 
-console.log("czechpoint 2");
 let film_dict = {};
 
 let guessRaw = "";
