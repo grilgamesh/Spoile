@@ -19,22 +19,34 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8">
                 <div id="guess">
-                    <form><input type="text" id="guessInput" placeholder="Enter film name" onchange="optionChanged(this.value)"><span style="white-space: nowrap;">
-                        <a href="#" class="littleButton" id="guessButton">Guess</a>
-                        <a href="#" class="littleButton" id="hint">Hint</a>
-                        <a href="#" class="littleButton" id="spoil">Spoil</a>
-                        <a href="#" class="littleButton" id="quit">Give Up</a>
+                    <form><input type="text" id="guessInput" placeholder="Enter film name" onchange="guessed(this.value)"><span style="white-space: nowrap;">
+                        <a href="#" class="littleButton" id="guessButton" onchange="guessed(guessInput.value)">Guess</a>
+                        <a href="#" class="littleButton" id="hint" onchange="hint()">Hint</a>
+                        <a href="#" class="littleButton" id="spoil" onchange="megahint()">Spoil</a>
+                        <a href="#" class="littleButton" id="quit" onchange="quit()">Give Up</a>
                     </span></form>
                  </div>
             </div>
+            <div class="col-md-4">
+                <div class="panel stats">
+                </div>
+                <div id="filmNotFound" class="panel panel-primary">
+                </div>
+            </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-8">
                 <div class="panel panel-primary">
-                    </div>
+                    <div id="proximity"></div>
                     <div id="keywords" class="panel-body"></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel stats">
+                </div>
+                <div id="guesses" class="panel panel-primary">
                 </div>
             </div>
         </div>
