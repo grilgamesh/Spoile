@@ -8,7 +8,7 @@ Can you guess the movie based on the plot keywords? A wordle-like film guessing 
 - D3 for handling the JSon 
 
 ## Files included
-In the root folder are the Python files Taggle and Taggle_webscraper. The Taggle_webscraper file was used to build a JSon file from the IMDB website and does not need to be run in order to use the game. It saves Json files of various sizes into the Data folder, so that a the game's difficulty can be adjusted by choosing smaller or larger datasets. The Taggle file itself is fully functional and can be run off-line if the user chooses. In order to make the game user-friendly, I have implemented it as the index.HTML file also in the root folder. This makes use of the static folder to store CSS and Javascript files.
+In the root folder are the Python files Taggle and Taggle_webscraper. The Taggle_webscraper file was used to build a JSon file from the IMDB website and does not need to be run in order to use the game. It saves Json files of various sizes into the Data folder, so that a the game's difficulty can be adjusted by choosing smaller or larger datasets. The Taggle file itself is fully functional and can be run off-line if the user chooses.  In order to make the game user-friendly, I have implemented it as the index.HTML file also in the root folder. This makes use of the static folder to store CSS and Javascript files.
 
 
 ## Rationale
