@@ -1,9 +1,39 @@
-let globalGP = {};
-
-function optionChanged(calledGP) {
+function optionChanged(guessRaw) {
     //replace display with selected value
     console.log("checkpoint: option changed");
-    console.log(calledGP);
+    guess = SPAG_remover(guessRaw);
+    guess_counter++;
+
+    if (guess == answerKey){
+        console.log("you're right! well done. \nAnd it only took you ${guess_counter} goes.");
+        console.log(answer['tags']);
+    }
+    
+    else{
+        try{
+            var answer_tags = answer['tags'];
+            console.log(answer_tags);
+
+            var guess_tags = film_dict[guess]['tags'];
+            console.log(guess_tags);
+
+            var common_tags = answer_tags.filter(value => guess_tags.includes(value));
+            console.log(common_tags);
+            
+            var similarity = Math.round(common_tags.length)*100/(answer_tags.length);
+            console.log(similarity);
+
+            // print(f"{similarity}% match! they share the following tags (repitions ommitted):\n")
+            // print(common_tags.difference(tag_list))
+            // tag_list = set(common_tags.union(tag_list))
+            // progress = round(len(tag_list)*100/(len(film_dict[answer]['tags'])))
+            // print(f"\nTotal progress: you have found {progress}% of the tags")
+            // guess_counter += 1
+        }
+        catch (err) {
+            print("Unknown film; " + err + " check your SPAG and try again");
+        }
+    }
 
     //find the new selection in the data
     GPid = national_gp_dict.gp.findIndex((element) => element == calledGP);
@@ -122,203 +152,61 @@ function optionChanged(calledGP) {
 
 };
 
-function newScat(calledPollutant){
-    // new SCATTER DIAGARM
-    console.log("new scatter");
-    scatterX = [];
-    scatterY = [];
-    scatter_labels = [];
-    var violist = []
-
-    var diagramSize = 600;
-
-    console.log(national_gp_dict.gp.length);
-    
-    for (let i = 0; i < national_gp_dict.gp.length; i++) {
-        scatterX[i] = national_gp_dict.metadata[i][calledPollutant];
-        scatterY[i]  = national_gp_dict.metadata[i].asthma_percentage;
-        scatter_labels[i]  = national_gp_dict.metadata[i].gp;
-        violist[i] = national_gp_dict.metadata[i][calledPollutant]
-    }
-    
-    console.log("czechpoint scatter");
-    // console.log(scatterX);
-    // console.log(scatterY);
-    // console.log(scatter_labels);
-    // console.log(scatter_colours);
 
 
 
-    var trace3 = {
-        type: "scatter",
-        x: scatterX,
-        y: scatterY,
-        text: scatter_labels,
-        mode: 'markers',
-        marker: {
-            size: 13,
-            color: '#0000FF'
-        }
-    };
-    var highlight = {
-        type: "scatter",
-        x: [globalGP[calledPollutant]],
-        y: [globalGP.asthma_percentage],
-        text: globalGP.gp,
-        mode: 'markers',
-        opacity: 0.61,
-        marker: {
-            size: 21,
-            color: "#FFFF00"
-        }
-    };
-    data = [trace3, highlight];
-    layout = {
-        title: 'How well air quality predicts asthma prevalence',
-        showlegend: false,
-        height: diagramSize,
-        width: diagramSize,
-        xaxis: {
-            title: {
-                text: calledPollutant + ", micrograms per cubic metre"
-            },
-        },
-        yaxis: {
-            title: {
-                text: "Asthma Percentage at English NHS centres"
-            },
-        }
-    };
-    Plotly.newPlot('scat', data, layout);
+function getAnswer(){
+    // currently, solution will be randomly selected during development.
+    // eventually this will be a date-related function like wordle.
 
-    //VIOLIN PLOTS
+    // Create array of object keys
+    const keys = Object.keys(film_dict);
 
-    var data = [{
-        type: 'violin',          
-        x: violist,          
-        points: 'none',          
-        box: {          
-          visible: true          
-        },          
-        boxpoints: false,          
-        line: {          
-          color: 'black'          
-        },          
-        fillcolor: '#8dd3c7',          
-        opacity: 0.6,          
-        meanline: {          
-          visible: true          
-        },          
-        y0: "distribution of "+ calledPollutant + " frequency"          
-      }]          
-      
-      var layout = {          
-        title: "",  
-        width: diagramSize,        
-        yaxis: {          
-          zeroline: false          
-        }          
-      }          
-      
-      Plotly.newPlot('violinX', data, layout);
+    // Generate random index based on number of keys
+    const randIndex = Math.floor(Math.random() * keys.length);
 
-      var data = [{
-        type: 'violin',          
-        y: scatterY,          
-        points: 'none',          
-        box: {          
-          visible: true          
-        },          
-        boxpoints: false,          
-        line: {          
-          color: 'black'          
-        },          
-        fillcolor: '#8dd3c7',          
-        opacity: 0.6,          
-        meanline: {          
-          visible: true          
-        },          
-        x0: "distribution of asthma frequency"          
-      }]          
-      
-      var layout = {          
-        title: "", 
-        height: diagramSize,         
-        yaxis: {          
-          zeroline: false          
-        }          
-      }          
-      
-      Plotly.newPlot('violinY', data, layout);
+    // Select a key from the array of keys using the random index
+    const randKey = keys[randIndex];
 
-};
+    return randKey;
+}
 
 
-// Display the default plots
-function init() {
-        
-    console.log("czechpoint init");
-    // console.log(gp_practice_dict);
-    // console.log(typeof gp_practice_dict);
-    // console.log(air_pollution_data);
-    // console.log(typeof air_pollution_data);
-    
-    // instantiate from the initial data passed from flask app.py to index.html to here
-       
-
-    let defaultGP = national_air_pollution_data.metadata[0].gp;
-    console.log("default GP set to:");
-    console.log(defaultGP);
-
-
-    // Use D3 to select the dropdown and add options to it;
-    let dropDown = d3.select("#selDataset");
-    var options = dropDown.selectAll("option")
-        .data(national_gp_dict.gp)
-        .enter()
-        .append("option");
-
-    options.text(function(d) {
-            return d;
-        })
-        .attr("value", function(d) {
-            return d;
-        });
-
-    //reduce keys to just air quality measures
-    const airKeys = ["aqi", "co", "nh3", "no", "no2", "o3", "pm10", "pm2_5", "so2"];
-    console.log(airKeys);
-
-    // Use D3 to select the dropdown and add options to it;
-    let polSelect = d3.select("#selectPollutant");
-    var options = polSelect.selectAll("option")
-        .data(airKeys)
-        .enter()
-        .append("option");
-
-    options.text(function(d) {
-            return d;
-        })
-        .attr("value", function(d) {
-            return d;
-        });
-
-        
-
-        
-
-    
-    // call the update method with the default datapoint selected.
-    optionChanged(defaultGP)
-
+function SPAG_remover(word){
+    console.log(word);
+    // method to remove punctuation from text, in order to make the game less annoyingly precise.
+    // also removes common words 'the' and 'and'.
+    cleanWord = word.toLowerCase().replace(/the /gi, '').replace(/and /gi, '').replace(/[.,\/#!$%\^&\*;:{}=\-_`'~()]/g,"").replace(/\s{2,}/g," ");    
+    console.log(cleanWord);
+    return cleanWord;
 }
 
 console.log("czechpoint 2");
-film_dict = {};
+let film_dict = {};
 
-var url1 = "../../data/imdb_tag_game_20.json";
-d3.json(url1).then(function(response1) {
+let guessRaw = "";
+let guess = "";
+let guess_counter = 0;
+let tag_list = [];
+
+let randKey = '';
+let answerKey = '';
+let answer = {};
+
+
+
+
+var url20 = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_20.json";
+d3.json(url20).then(function(response1) {
     film_dict = response1
-    console.log(film_dict);
+    console.log("film_dict loaded. there are " + Object.keys(film_dict).length + " entries in solution set");
+
+
+    // instantiate answer
+    randKey = getAnswer();
+    // remove confusing punctuation and forgettable words from the answer
+    answerKey = SPAG_remover(randKey);
+    // Use the key to get the corresponding name from the "names" object
+    answer = film_dict[randKey];
     
 })
