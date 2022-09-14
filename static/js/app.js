@@ -1,52 +1,62 @@
 function guessed(guessRaw) {
     //replace display with selected value
-    console.log("checkpoint: guess made");
+    console.log("checkpoint: guess made: " + guessRaw);
     guess = SPAG_remover(guessRaw);
 
     if (guess == answerKey){
         guess_counter++;
         congrats = "you're right! well done. And it only took you "+ guess_counter + " goes."
+        console.log("checkpoint:  " + guessRaw);
         // replace the contents of the proximity panel with the congrats string
         d3.select('#proximity').html(congrats);
+
         // replace the contents of the main panel with the COMPLETE tags list
+        console.log("checkpoint: " + answerDict['tags']);
         d3.select('#keywords').html(answerDict['tags']);
+
         // replace the contents of the side panel with the correct solution
-        list_of_guesses = `<p>${guess_counter}: ${film_dict[guess]['punc_name']} 100% similarity</p>${list_of_guesses}`;
+        list_of_guesses = `<p>${guess_counter}: ${answerDict['punc_name']} 100% similarity</p>${list_of_guesses}`;
+        console.log("checkpoint: " + list_of_guesses);
         d3.select('#guesses').html(list_of_guesses);
+        
+        //reveal the replay button
+        console.log("play again?");
+        d3.select('#replay').html('<button class="littleButton" onClick="window.location.reload();">Play again</button>');
+        console.log("play again?");
     }    
     else{
-        d3.select('#filmNotFound').html("good guess");
         var answer_tags = answerDict['tags'];
 
         for (i=0; i<films.length; i++){
-            if (guess = year_remover(films[i])){
-                var guess_tags = film_dict[films[i]]['tags'];
+            if (guess == year_remover(films[i])){
+                var guess_Dict = film_dict[films[i]];
+                var guess_tags = guess_Dict['tags'];
+                console.log("checkpoint: guess found: " + guess_Dict['punc_name']);
+                var common_tags = answer_tags.filter(value => guess_tags.includes(value));
+                
+                guess_counter++;
+                
+                var similarity = Math.round(common_tags.length*100/(answer_tags.length));
+                // replace the contents of the side panel with the new guess list
+                list_of_guesses = `<p>${guess_counter}: ${guess_Dict['punc_name']} ${similarity}% similarity</p>${list_of_guesses}`;
+                d3.select('#guesses').html(list_of_guesses);
+
+                tag_list = common_tags.concat(tag_list.filter((item) => common_tags.indexOf(item) < 0));
+                // replace the contents of the main panel with the new tags list
+                var tag_list_html = format_keywords(tag_list);
+                d3.select('#keywords').html(tag_list_html);
+
+                var progress = Math.round(tag_list.length*100/(answer_tags.length));
+                // replace the contents of the proximity panel with the new proximity
+                d3.select('#proximity').html(progress + "% of tags revealed");
+                d3.select('#filmNotFound').html("good guess");
+                break;
             }
             else{
                 // replace the contents of the filmNotFound panel with the alert
                 d3.select('#filmNotFound').html("Unknown film; spelling mistake or out of database");
             }
         }
-
-        
-
-        var common_tags = answer_tags.filter(value => guess_tags.includes(value));
-        
-        guess_counter++;
-        
-        var similarity = Math.round(common_tags.length*100/(answer_tags.length));
-        // replace the contents of the side panel with the new guess list
-        list_of_guesses = `<p>${guess_counter}: ${guess_tags['punc_name']} ${similarity}% similarity</p>${list_of_guesses}`;
-        d3.select('#guesses').html(list_of_guesses);
-
-        tag_list = common_tags.concat(tag_list.filter((item) => common_tags.indexOf(item) < 0));
-        // replace the contents of the main panel with the new tags list
-        d3.select('#keywords').html(tag_list);
-
-        var progress = Math.round(tag_list.length*100/(answer_tags.length));
-        // replace the contents of the proximity panel with the new proximity
-        d3.select('#proximity').html(progress + "% of tags revealed");
-
     }
 
 //     //find the new selection in the data
@@ -166,36 +176,64 @@ function guessed(guessRaw) {
 
 };
 
+function format_keywords(tags){
+    var html = "";
+    for (i = 0; i< tags.length; i++){
+        if(i%5 == 0 ){
+            html = html + '<div class="row">'
+        }
+        html = html + '<div class="col-md-2">' + tags[i] + '</div>'
+        if (i%5 == 4 ){
+            html = html + '</div>'
+        }
+    }
+    return html;
+}
+
 function hint(){
+    console.log("hint activated")
     // guess a random film
     randHint = getAnswer();
     // remove confusing punctuation and forgettable words from the hint
+    randHint = year_remover(randHint);
     hintKey = SPAG_remover(randHint);
+    // make sure the hint is not the solution
+    while (hintKey == answerKey){
+        randHint = getAnswer();
+        randHint = year_remover(randHint);
+        hintKey = SPAG_remover(randHint);
+    }
+
     // guess the hint
     guessed(hintKey);
     hint_counter++;
 
     // reveal the megahint function once this has been used three times
     if (hint_counter == 3){
-        
+        d3.select('#spoil').html('<a href="#" class="littleButton" id="spoil" onclick="megahint()">Spoil</a>');        
     }
-
 }
 
 function megahint(){
     // replace the contents of the main panel with the COMPLETE list
-    d3.select('#keywords').html(answerDict['tags']);
+    
+    d3.select('#keywords').html(format_keywords(answerDict['tags']));
     console.log("megahint")
     //reveal the quit function
+    d3.select('#quit').html('<a href="#" class="littleButton" id="quit" onclick="quit()">Give Up</a>');
 
 }
 
 function quit(){
     // replace the contents of the main panel with the COMPLETE list
-        d3.select('#keywords').html(answerDict['tags']);
+        d3.select('#keywords').html(format_keywords(answerDict['tags']));
         // replace the contents of the proximity panel with the congrats string
-        quitString = `<p>oh, that's a shame, it was ${randKey}</p>`
+        quitString = `<p>oh, that's a shame, it was ${answerDict['punc_name']}</p>`
         d3.select('#proximity').html(quitString);
+
+        //reveal the replay button
+        d3.select('#replay').html('<button class="littleButton" onClick="window.location.reload();">Play again</button>');
+
 }
 
 function getAnswer(){
@@ -216,14 +254,15 @@ function SPAG_remover(word){
     // method to remove punctuation from text, in order to make the game less annoyingly precise, e.g. user might type 'spiderman' instead of 'spider-man'
     // also removes common words 'the' and 'and'.
     // also removes spaces, so that e.g. 'bat man' and 'batman' are identical.
-    cleanWord = word.toLowerCase().replace(/the /gi, '').replace(/ and /gi, '').replace(/[.,\/#!$%\·^&\*;:{}=\-_`'~()]/g,"").replace(/\s/g,"");    
+    cleanWord = word.toLowerCase().replace(/the /gi, '').replace(/ and /gi, '').replace(/[.,\/#!¡$%\·^&\*;:{}=\-_`'~()]/g,"").replace(/\s/g,"").replace(/¢/gi, 'c');    
     console.log(cleanWord);
     return cleanWord;
 }
 
 function year_remover(title){
-    // removes the last 6 characters of the film title e.g. (1977)
-    return title.slice(0, -6) 
+    // removes any bracketed elements e.g. (1977)
+    //this will also remove the e.g. (I) that IMDB appends to the names of duplicated films.
+    return title.replace(/ *\([^)]*\) */g, "");
 }
 
 let film_dict = {};
@@ -238,10 +277,10 @@ let answerKey = '';
 let answerDict = {};
 
 let list_of_guesses = '';
-let int_counter = 0;
+let hint_counter = 0;
 
 
-var url20 = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_1.json";
+var url20 = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_60.json";
 console.log("please wait while data loads");
 
 d3.json(url20).then(function(response) {
@@ -259,4 +298,7 @@ d3.json(url20).then(function(response) {
     // Use the key to get the corresponding name from the "names" object
     answerDict = film_dict[randKey];
     console.log(answerDict);
+
+    // set up blank spaces
+    d3.select('#filmNotFound').html("<p>Type a film and hit enter or click guess to get tags</p>");
 })
