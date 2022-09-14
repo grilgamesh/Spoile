@@ -12,7 +12,7 @@ function guessed(guessRaw) {
 
         // replace the contents of the main panel with the COMPLETE tags list
         console.log("checkpoint: " + answerDict['tags']);
-        d3.select('#keywords').html(answerDict['tags']);
+        d3.select('#keywords').html(format_keywords(answerDict['tags']));
 
         // replace the contents of the side panel with the correct solution
         list_of_guesses = `<p>${guess_counter}: ${answerDict['punc_name']} 100% similarity</p>${list_of_guesses}`;
@@ -21,7 +21,8 @@ function guessed(guessRaw) {
         
         //reveal the replay button
         console.log("play again?");
-        d3.select('#replay').html('<button class="littleButton" onClick="window.location.reload();">Play again</button>');
+        // commented out because it bugs out the game - fires automatically
+        // d3.select('#replay').html('<button class="littleButton" onClick="window.location.reload();">Play again</button>');
         console.log("play again?");
     }    
     else{
