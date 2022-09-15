@@ -37,3 +37,18 @@ h2{
   color: #333;
 }
 
+.keyword{
+  font-size: medium;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  color: rgb(1, 43, 23);
+  background-color:rgb(224, 224, 255);
+  border-color: rgb(44, 44, 16);
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 2px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 2px;
+  padding-bottom: 3px;
+  margin-top: 2px;
+}

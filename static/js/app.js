@@ -5,7 +5,7 @@ function guessed(guessRaw) {
 
     if (guess == answerKey){
         guess_counter++;
-        congrats = "you're right! well done. And it only took you "+ guess_counter + " goes."
+        congrats = "<p>you're right! well done. And it only took you "+ guess_counter + " goes.</p>";
         console.log("checkpoint:  " + guessRaw);
         // replace the contents of the proximity panel with the congrats string
         d3.select('#proximity').html(congrats);
@@ -49,13 +49,13 @@ function guessed(guessRaw) {
 
                 var progress = Math.round(tag_list.length*100/(answer_tags.length));
                 // replace the contents of the proximity panel with the new proximity
-                d3.select('#proximity').html(progress + "% of tags revealed");
-                d3.select('#filmNotFound').html("good guess");
+                d3.select('#proximity').html("<p>" + progress + "% of tags revealed</p>");
+                d3.select('#filmNotFound').html("<p>good guess</p>");
                 break;
             }
             else{
                 // replace the contents of the filmNotFound panel with the alert
-                d3.select('#filmNotFound').html("Unknown film; spelling mistake or out of database");
+                d3.select('#filmNotFound').html("<p>Unknown film; spelling mistake or out of database</p>");
             }
         }
     }
@@ -178,13 +178,14 @@ function guessed(guessRaw) {
 };
 
 function format_keywords(tags){
+    var width = 4;
     var html = "";
     for (i = 0; i< tags.length; i++){
-        if(i%5 == 0 ){
+        if(i%width == 0 ){
             html = html + '<div class="row">'
         }
-        html = html + '<div class="col-md-2">' + tags[i] + '</div>'
-        if (i%5 == 4 ){
+        html = html + '<div class="col-md-3 keyword">' + tags[i] + '</div>'
+        if (i%width == (width-1)){
             html = html + '</div>'
         }
     }
