@@ -28,6 +28,8 @@ function guessed(guessRaw) {
         x.style.visibility = "hidden";
         x = document.getElementById("hint");
         x.style.visibility = "hidden";
+        x = document.getElementById("spoil");
+        x.style.visibility = "hidden";
     }    
     else{
         for (i=0; i<films.length; i++){
