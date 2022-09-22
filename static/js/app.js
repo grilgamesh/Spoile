@@ -246,7 +246,11 @@ function getAnswer(){
     const randIndex = Math.floor(Math.random() * films.length);
 
     // Select a key from the array of keys using the random index
-    const randKey = films[randIndex];
+    let randKey = films[randIndex];
+    // if this film has fewer than 100 tags, reroll. This will filter out some impossible solutions.
+    if (film_dict[randKey].length < 100){
+        randKey = getAnswer();
+    }
 
     return randKey;
 }
@@ -267,6 +271,22 @@ function year_remover(title){
     return title.replace(/ *\([^)]*\) */g, "");
 }
 
+function init(){
+    
+    // instantiate answer
+    randKey = getAnswer();
+    console.log(randKey);
+    // remove year from the answerKey
+    answerKey = year_remover(randKey);
+    console.log(answerKey);
+    // Use the key to get the corresponding name from the "names" object
+    answerDict = film_dict[randKey];
+    console.log(answerDict);
+
+    // set up blank spaces
+    d3.select('#filmNotFound').html("<p>Type a film and hit enter or click guess to get tags</p>");
+}
+
 let film_dict = {};
 
 let guessRaw = "";
@@ -282,8 +302,9 @@ let list_of_guesses = '';
 let hint_counter = 0;
 
 
-var url20 = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_60.json";
+var url20 = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_100.json";
 console.log("please wait while data loads");
+d3.select('#filmNotFound').html("<p>please wait while data loads</p>");
 
 d3.json(url20).then(function(response) {
     film_dict = response;
@@ -291,16 +312,5 @@ d3.json(url20).then(function(response) {
     console.log("film_dict loaded. there are " + films.length + " entries in solution set");
     console.log(films);
 
-    // instantiate answer
-    randKey = getAnswer();
-    console.log(randKey);
-    // remove year from the answerKey
-    answerKey = year_remover(randKey);
-    console.log(answerKey);
-    // Use the key to get the corresponding name from the "names" object
-    answerDict = film_dict[randKey];
-    console.log(answerDict);
-
-    // set up blank spaces
-    d3.select('#filmNotFound').html("<p>Type a film and hit enter or click guess to get tags</p>");
+    init();
 })
