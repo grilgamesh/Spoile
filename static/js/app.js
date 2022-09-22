@@ -5,52 +5,75 @@ function guessed(guessRaw) {
 
     if (guess == answerKey){
         guess_counter++;
-        congrats = "<p>you're right! well done. And it only took you "+ guess_counter + " goes.</p>";
+        let link = "https://www.imdb.com/title/" + answerDict['id'];
+        congrats = "<p>You're right! Well done. And it only took you "+ guess_counter + " goes.</p><p><a href= "+ link + " target=”_blank” > Click here to find out more about "+ answerDict['punc_name'] + "</a></p>";
         console.log("checkpoint:  " + guessRaw);
         // replace the contents of the proximity panel with the congrats string
         d3.select('#proximity').html(congrats);
 
         // replace the contents of the main panel with the COMPLETE tags list
-        console.log("checkpoint: " + answerDict['tags']);
         d3.select('#keywords').html(format_keywords(answerDict['tags']));
 
         // replace the contents of the side panel with the correct solution
         list_of_guesses = `<p>${guess_counter}: ${answerDict['punc_name']} 100% similarity</p>${list_of_guesses}`;
-        console.log("checkpoint: " + list_of_guesses);
         d3.select('#guesses').html(list_of_guesses);
         
         //reveal the replay button
         console.log("play again?");
-        // commented out because it bugs out the game - fires automatically
-        // d3.select('#replay').html('<button class="littleButton" onClick="window.location.reload();">Play again</button>');
-        console.log("play again?");
+        
+        var x = document.getElementById("replay");
+        x.style.visibility = "visible";
+        //hide the guess and hint functions
+        x = document.getElementById("guess");
+        x.style.visibility = "hidden";
+        x = document.getElementById("hint");
+        x.style.visibility = "hidden";
     }    
     else{
-        var answer_tags = answerDict['tags'];
-
         for (i=0; i<films.length; i++){
             if (guess == year_remover(films[i])){
                 var guess_Dict = film_dict[films[i]];
                 var guess_tags = guess_Dict['tags'];
+                if (guess_list.includes(guess_Dict['punc_name'])){
+                    // replace the contents of the filmNotFound panel with the alert
+                    d3.select('#filmNotFound').html("<p>Duplicate guess</p>");
+                    break
+                }
                 console.log("checkpoint: guess found: " + guess_Dict['punc_name']);
                 var common_tags = answer_tags.filter(value => guess_tags.includes(value));
+
+                if (megahint_revealed == false){
+                    // only update the tag list if the user hasn't already used the megahint
+                    tag_display(guess_tags);
+
+                    guess_counter++;
+
+                    // old code:
+
+                    tag_list = common_tags.concat(tag_list.filter((item) => common_tags.indexOf(item) < 0));
+                    // replace the contents of the main panel with the new tags list
+                    var tag_list_html = format_keywords(tag_list);
+                    //old code: 
+                    // d3.select('#keywords').html(tag_list_html);
+
+                    var progress = Math.round(tag_list.length*100/(answer_tags.length));
+                    // replace the contents of the proximity panel with the new proximity
+                    d3.select('#proximity').html("<p>" + progress + "% of tags revealed</p>");
+                }
                 
-                guess_counter++;
                 
                 var similarity = Math.round(common_tags.length*100/(answer_tags.length));
+                // Calculate the similarity for bar chart as the % of tags in common (compared to the answer tags), processed as a log base 10, and then multiplied by 50.
+                // This converts the log - which will have been between 0 and 2, to a new percentage that is less cramped in single digits.
+                // I do this because the tags do seem to be on a log scale, with even closely related films only scoring about 33% tags in common.
+                var logSimilarity = Math.round(Math.log10(common_tags.length*100/(answer_tags.length))*50);
                 // replace the contents of the side panel with the new guess list
                 list_of_guesses = `<p>${guess_counter}: ${guess_Dict['punc_name']} ${similarity}% similarity</p>${list_of_guesses}`;
                 d3.select('#guesses').html(list_of_guesses);
-
-                tag_list = common_tags.concat(tag_list.filter((item) => common_tags.indexOf(item) < 0));
-                // replace the contents of the main panel with the new tags list
-                var tag_list_html = format_keywords(tag_list);
-                d3.select('#keywords').html(tag_list_html);
-
-                var progress = Math.round(tag_list.length*100/(answer_tags.length));
-                // replace the contents of the proximity panel with the new proximity
-                d3.select('#proximity').html("<p>" + progress + "% of tags revealed</p>");
                 d3.select('#filmNotFound').html("<p>good guess</p>");
+
+                // add the proper name to the guess list
+                guess_list.push(guess_Dict['punc_name']);
                 break;
             }
             else{
@@ -175,7 +198,7 @@ function guessed(guessRaw) {
 //     newScat(airKeys[0]);
 
 
-};
+}
 
 function format_keywords(tags){
     var width = 4;
@@ -184,9 +207,9 @@ function format_keywords(tags){
         if(i%width == 0 ){
             html = html + '<div class="row">'
         }
-        html = html + '<div class="col-md-3 keyword">' + tags[i] + '</div>'
+        html = html + '<div class="col-md-3 keyword" id='+i+'>' + tags[i] + '</div>';
         if (i%width == (width-1)){
-            html = html + '</div>'
+            html = html + '</div>';
         }
     }
     return html;
@@ -212,7 +235,8 @@ function hint(){
 
     // reveal the megahint function once this has been used three times
     if (hint_counter == 3){
-        d3.select('#spoil').html('<a href="#" class="littleButton" id="spoil" onclick="megahint()">Spoil</a>');        
+        x = document.getElementById("spoil");
+        x.style.visibility = "visible";
     }
 }
 
@@ -220,9 +244,24 @@ function megahint(){
     // replace the contents of the main panel with the COMPLETE list
     
     d3.select('#keywords').html(format_keywords(answerDict['tags']));
+    d3.select('#proximity').html("<p>100% of tags revealed!</p>");
+    // replace the contents of the side panel with the new guess list
+    list_of_guesses = `<p>All tags revealed</p>${list_of_guesses}`;
+    d3.select('#guesses').html(list_of_guesses);
+
     console.log("megahint")
     //reveal the quit function
-    d3.select('#quit').html('<a href="#" class="littleButton" id="quit" onclick="quit()">Give Up</a>');
+    var x = document.getElementById("quit");
+    x.style.visibility = "visible";
+    //hide the hint function
+    x = document.getElementById("hint");
+    x.style.visibility = "hidden";
+    //hide this function
+    x = document.getElementById("spoil");
+    x.style.visibility = "hidden";
+
+    megahint_revealed = true;
+
 
 }
 
@@ -234,7 +273,14 @@ function quit(){
         d3.select('#proximity').html(quitString);
 
         //reveal the replay button
-        d3.select('#replay').html('<button class="littleButton" onClick="window.location.reload();">Play again</button>');
+    var x = document.getElementById("replay");
+    x.style.visibility = "visible";
+    //hide this function
+    x = document.getElementById("quit");
+    x.style.visibility = "hidden";
+    //hide the guess function
+    x = document.getElementById("guess");
+    x.style.visibility = "hidden";
 
 }
 
@@ -247,8 +293,8 @@ function getAnswer(){
 
     // Select a key from the array of keys using the random index
     let randKey = films[randIndex];
-    // if this film has fewer than 100 tags, reroll. This will filter out some impossible solutions.
-    if (film_dict[randKey].length < 100){
+    // if this film has fewer than 100 tags, reroll. This will filter out some unguessable solutions.
+    if (film_dict[randKey]['tags'].length < 100){
         randKey = getAnswer();
     }
 
@@ -271,7 +317,26 @@ function year_remover(title){
     return title.replace(/ *\([^)]*\) */g, "");
 }
 
+function tag_display(tag_list){
+    for (i=0; i<tag_list.length; i++){
+        for (j=0; j<answer_tags.length; j++){
+            if (tag_list[i] == answer_tags[j]){
+                var x = document.getElementById(j);
+                x.style.visibility = "visible";
+                break
+            }
+        }
+    }
+}
+
 function init(){
+    //re-initate variables as necessary
+    list_of_guesses = '';
+    hint_counter = 0;
+    guess_counter = 0;
+    megahint_revealed = false;
+    guess_list = [];
+    tag_list = [];
     
     // instantiate answer
     randKey = getAnswer();
@@ -282,9 +347,30 @@ function init(){
     // Use the key to get the corresponding name from the "names" object
     answerDict = film_dict[randKey];
     console.log(answerDict);
+    answer_tags = answerDict['tags'];
 
     // set up blank spaces
-    d3.select('#filmNotFound').html("<p>Type a film and hit enter or click guess to get tags</p>");
+    d3.select('#filmNotFound').html("<p>film_dict loaded. there are " + films.length + " entries in solution set. Type a film and hit enter or click guess to get tags</p>");
+    d3.select('#guesses').html("<p>Guesses will appear here</p>");
+    d3.select('#proximity').html("<p> Tags will appear here</p> ");
+    d3.select('#keywords').html(format_keywords(answer_tags));
+
+    for (i=0; i<answer_tags.length; i++){
+        var x = document.getElementById(i);
+        x.style.visibility = "hidden";    
+    }
+
+    // show or hide buttons as necessary
+    var x = document.getElementById("guess");
+    x.style.visibility = "visible";    
+    x = document.getElementById("hint");
+    x.style.visibility = "visible";
+    x = document.getElementById("spoil");
+    x.style.visibility = "hidden";
+    x = document.getElementById("quit");
+    x.style.visibility = "hidden";
+    x = document.getElementById("replay");
+    x.style.visibility = "hidden";
 }
 
 let film_dict = {};
@@ -293,13 +379,16 @@ let guessRaw = "";
 let guess = "";
 let guess_counter = 0;
 let tag_list = [];
+let guess_list = [];
 
 let randKey = '';
 let answerKey = '';
 let answerDict = {};
+var answer_tags = [];
 
 let list_of_guesses = '';
 let hint_counter = 0;
+let megahint_revealed = false;
 
 
 var url20 = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_100.json";

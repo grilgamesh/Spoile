@@ -21,13 +21,15 @@
         <div class="row">
             <div class="col-md-8">
                 <div id="guess">
-                    <form><input type="text" id="guessInput" placeholder="Enter film name" onchange="guessed(this.value)"><span style="white-space: nowrap;">
-                        <a href="#" class="littleButton" id="guessButton" onclick="guessed(guessInput.value)">Guess</a>
-                        <a href="#" class="littleButton" id="hint" onclick="hint()">Hint</a>
-                        <a href="#" class="littleButton" id="spoil" onclick="megahint()"></a>
-                        <a href="#" class="littleButton" id="quit" onclick="quit()"></a>
-                        <a href="#" class="littleButton" id="replay"></a>
-                    </span></form>
+                    <form><input type="text" id="guessInput" placeholder="Enter film name" onchange="guessed(this.value)">
+                        <span style="white-space: nowrap;">
+                            <a href="#" class="littleButton" id="guessButton" onclick="guessed(guessInput.value)">Guess</a>
+                            <a href="#" class="littleButton" id="hint" onclick="hint()">Hint</a>
+                            <a href="#" class="littleButton" id="spoil" onclick="megahint()">Reveal Tags</a>
+                            <a href="#" class="littleButton" id="quit" onclick="quit()">Give up</a>
+                            <a href="#" class="littleButton" id="replay" onClick="init()">Play again</a>
+                        </span>
+                    </form>
                  </div>
             </div>
             <div class="col-md-4">
