@@ -6,7 +6,12 @@ function guessed(guessRaw) {
     if (guess == answerKey){
         guess_counter++;
         let link = "https://www.imdb.com/title/" + answerDict['id'];
-        congrats = "<p>You're right! Well done. And it only took you "+ guess_counter + " goes.</p><p><a href= "+ link + " target=”_blank” > Click here to find out more about "+ answerDict['punc_name'] + "</a></p>";
+        if (megahint_revealed == false){
+            congrats = "<p>You're right! Well done, and it only took you "+ guess_counter + " goes.</p><p><a href= "+ link + " target=”_blank” > Click here to find out more about "+ answerDict['punc_name'] + "</a></p>";
+        }
+        else{
+            congrats = "<p>You're right! Well done. It only took you "+ guess_counter + " goes, and a free look at all the tags.</p><p><a href= "+ link + " target=”_blank” > Click here to find out more about "+ answerDict['punc_name'] + "</a></p>";
+        }
         console.log("checkpoint:  " + guessRaw);
         // replace the contents of the proximity panel with the congrats string
         d3.select('#proximity').html(congrats);
@@ -29,6 +34,8 @@ function guessed(guessRaw) {
         x = document.getElementById("hint");
         x.style.visibility = "hidden";
         x = document.getElementById("spoil");
+        x.style.visibility = "hidden";
+        x = document.getElementById("quit");
         x.style.visibility = "hidden";
     }    
     else{
