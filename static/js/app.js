@@ -209,7 +209,8 @@ function format_keywords(tags){
         if(i%width == 0 ){
             html = html + '<div class="row">'
         }
-        html = html + '<div class="col-md-3 keyword" id='+i+'>' + tags[i] + '</div>';
+        let tag = tags[i].replace(/ /g, "-")
+        html = html + '<div class="col-md-3 keyword" id='+i+'><a href = "https://www.imdb.com/search/keyword/?keywords=' + tag + '" target="blank"> ' + tags[i] + '</div>';
         if (i%width == (width-1)){
             html = html + '</div>';
         }
@@ -270,9 +271,14 @@ function megahint(){
 function quit(){
     // replace the contents of the main panel with the COMPLETE list
         d3.select('#keywords').html(format_keywords(answerDict['tags']));
+        // replace the contents of the side panel with the new guess list
+        list_of_guesses = `<p>Nevermind, there's always next time.</p>${list_of_guesses}`;
+        d3.select('#guesses').html(list_of_guesses);
+        let link = "https://www.imdb.com/title/" + answerDict['id'];
         // replace the contents of the proximity panel with the congrats string
-        quitString = `<p>oh, that's a shame, it was ${answerDict['punc_name']}</p>`
+        quitString = `<p>oh, that's a shame, it was ${answerDict['punc_name']}</p><p><a href= ${link} target=”_blank” > Click here to find out more about ${answerDict['punc_name']}</a></p>`
         d3.select('#proximity').html(quitString);
+        d3.select('#filmNotFound').html("<p>Don't torture yourself, Gomez. That's my job.</p>");
 
         //reveal the replay button
     var x = document.getElementById("replay");
@@ -283,6 +289,7 @@ function quit(){
     //hide the guess function
     x = document.getElementById("guess");
     x.style.visibility = "hidden";
+    
 
 }
 
@@ -292,6 +299,10 @@ function getAnswer(){
 
     // Generate random index based on number of keys
     const randIndex = Math.floor(Math.random() * films.length);
+
+    // weight the randomiser to the early end by using natural log (experimental)
+    // const base = 50
+    // const randIndex = Math.ceil(base**(Math.random() * Math.log(films.length)/Math.log(base)));
 
     // Select a key from the array of keys using the random index
     let randKey = films[randIndex];
@@ -352,7 +363,7 @@ function init(){
     answer_tags = answerDict['tags'];
 
     // set up blank spaces
-    d3.select('#filmNotFound').html("<p>film_dict loaded. there are " + films.length + " entries in solution set. Type a film and hit enter or click guess to get tags</p>");
+    d3.select('#filmNotFound').html("<p>film_dict loaded. there are " + films.length + " entries in solution set. Type a film and hit enter or click guess...</p>");
     d3.select('#guesses').html("<p>Guesses will appear here</p>");
     d3.select('#proximity').html("<p> Tags will appear here</p> ");
     d3.select('#keywords').html(format_keywords(answer_tags));
