@@ -20,9 +20,10 @@
         </div>
         <div class="row">
             <div class="col-md-8" id="guess">
-
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Guess a movie" aria-label="guess input" id="guessInput" aria-describedby="basic-addon2" onchange="guessed(this.value)">
+                <div class="input-group autocomplete" >
+                    <!-- <form autocomplete="off" action="/action_page.php"> -->
+                        <input type="text" class="form-control" placeholder="Guess a movie" aria-label="guess input" id="guessInput" type="text" name="guessInput" aria-describedby="basic-addon2" onchange="guessed(this.value)">
+                    <!-- </form> -->
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button" id="guessButton" onclick="guessed(guessInput.value)">Guess</button>
                         <button class="btn btn-outline-secondary" type="button" id="hint" onclick="hint()">Random</button>
@@ -58,6 +59,7 @@
     
     <link rel="stylesheet" href="static/css/style.css" />
     <script src="static/js/app.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.min.js"></script> -->
     <!-- <script type="text/javascript" src="static/js/heatmap.js"></script> -->
 
 
