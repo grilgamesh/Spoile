@@ -20,23 +20,30 @@ function guessed(guessRaw) {
         d3.select('#keywords').html(format_keywords(answerDict['tags']));
 
         // replace the contents of the side panel with the correct solution
-        list_of_guesses = `<p>${guess_counter}: ${answerDict['punc_name']} 100% similarity</p>${list_of_guesses}`;
+        list_of_guesses = `<p>${guess_counter}: ${answerDict['punc_name']} 100% similarity</p>
+        <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${100}%" aria-valuenow="${100}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>${list_of_guesses}`
         d3.select('#guesses').html(list_of_guesses);
         
-        //reveal the replay button
-        console.log("play again?");
         
-        var x = document.getElementById("replay");
-        x.style.visibility = "visible";
         //hide the guess and hint functions
-        x = document.getElementById("guess");
+        x = document.getElementById("guessInput");
+        x.style.visibility = "hidden";
+        x = document.getElementById("guessClick");
         x.style.visibility = "hidden";
         x = document.getElementById("hint");
         x.style.visibility = "hidden";
         x = document.getElementById("spoil");
-        x.style.visibility = "hidden";
+        x.style.display = 'none';  
         x = document.getElementById("quit");
-        x.style.visibility = "hidden";
+        x.style.display = 'none';  
+        //reveal the replay button
+        var x = document.getElementById("replay");
+        x.style.display = 'inline';  
+        
+        cumulative_tags.push(100);
+        guess_counter_list.push(guess_counter);
     }    
     else{
         for (i=0; i<films.length; i++){
@@ -44,8 +51,8 @@ function guessed(guessRaw) {
                 var guess_Dict = film_dict[films[i]];
                 var guess_tags = guess_Dict['tags'];
                 if (guess_list.includes(guess_Dict['punc_name'])){
-                    // replace the contents of the filmNotFound panel with the alert
-                    d3.select('#filmNotFound').html("<p>Duplicate guess</p>");
+                    // replace the contents of the proximity panel with the alert
+                    d3.select('#proximity').html("<p>Duplicate guess</p>");
                     break
                 }
                 console.log("checkpoint: guess found: " + guess_Dict['punc_name']);
@@ -61,13 +68,15 @@ function guessed(guessRaw) {
 
                     tag_list = common_tags.concat(tag_list.filter((item) => common_tags.indexOf(item) < 0));
                     // replace the contents of the main panel with the new tags list
-                    var tag_list_html = format_keywords(tag_list);
                     //old code: 
+                    // var tag_list_html = format_keywords(tag_list);
                     // d3.select('#keywords').html(tag_list_html);
 
                     var progress = Math.round(tag_list.length*100/(answer_tags.length));
                     // replace the contents of the proximity panel with the new proximity
                     d3.select('#proximity').html("<p>" + progress + "% of tags revealed</p>");
+                    cumulative_tags.push(progress);
+                    guess_counter_list.push(guess_counter);
                 }
                 
                 
@@ -76,138 +85,161 @@ function guessed(guessRaw) {
                 // This converts the log - which will have been between 0 and 2, to a new percentage that is less cramped in single digits.
                 // I do this because the tags do seem to be on a log scale, with even closely related films only scoring about 33% tags in common.
                 var logSimilarity = Math.round(Math.log10(common_tags.length*100/(answer_tags.length))*50);
+                simliarity_list.push(logSimilarity);
                 // replace the contents of the side panel with the new guess list
-                list_of_guesses = `<p>${guess_counter}: ${guess_Dict['punc_name']} ${similarity}% similarity</p>${list_of_guesses}`;
+                if(logSimilarity<50){
+                    colour = "info"
+                }
+                else{
+                    colour = "warning"
+                }
+                list_of_guesses = `<p>${guess_counter}: ${guess_Dict['punc_name']} ${similarity}% similarity</p>
+                    <div class="progress">
+                        <div class="progress-bar bg-${colour}" role="progressbar" style="width: ${logSimilarity}%" aria-valuenow="${logSimilarity}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>${list_of_guesses}`;
                 d3.select('#guesses').html(list_of_guesses);
-                d3.select('#filmNotFound').html("<p>good guess</p>");
+                // guess_scatter();
 
                 // add the proper name to the guess list
                 guess_list.push(guess_Dict['punc_name']);
                 break;
             }
             else{
-                // replace the contents of the filmNotFound panel with the alert
-                d3.select('#filmNotFound').html("<p>Unknown film; spelling mistake or out of database</p>");
+                // replace the contents of the proximity panel with the alert
+                d3.select('#proximity').html("<p>Unknown film; spelling mistake or out of database</p>");
             }
         }
     }
-
-//     //find the new selection in the data
-//     GPid = national_gp_dict.gp.findIndex((element) => element == calledGP);
-//     console.log(GPid);
-//     let currentGP = national_gp_dict.metadata[GPid];
-//     globalGP = currentGP;
     
-
-//     //instantiate the metadata
-//     console.log("checkpoint infopanel");
-//     let keys = Object.keys(currentGP);
-//     console.log(keys);
-//     console.log(currentGP);
-
-//     //reduce keys to just air quality measures
-//     const airKeys = ["aqi", "co", "nh3", "no", "no2", "o3", "pm10", "pm2_5", "so2"];
-//     console.log(airKeys);
-
-//     // start building the metadata html to display in the infobox
-//     let metaText = "Location: " + calledGP + "<hr>";
-//     //loop through the keys and insert the relevant text into the metadata
-//     for (i = 0; i < airKeys.length; i++) {
-//         // console.log(currentGP[airKeys[i]]);
-//         metaText = metaText + airKeys[i] + ": " + currentGP[airKeys[i]] + "<br>";
-//     }
-//     // replace the contents of the infobox with the new metadata html string
-//     d3.select('#sample-metadata').html(metaText);
-    
-
-//     // get the air quality data
-//     let timestamps = national_air_pollution_data.date_time;
-//     console.log(timestamps);
-//     let dateStrings = []
-//     //copy the data into javascript format by multiplying by 1000
-//     for (let i = 0; i < timestamps.length; i++){
-//         dateStrings[i] = (timestamps[i] * 1000);
-//     }
-//     console.log(dateStrings);
-
-    
-
-//     //instantiate a wrapper for the different measures of air quality
-//     let yvalues = [];
-//     for (i = 0; i< airKeys.length; i++){
-//         yvalues[i] = [];
-//     };
-//     console.log(yvalues);
-
-
-//     // loop through ALL of the metadata
-//     for (let i = 0; i < national_air_pollution_data.metadata.length; i++) {
-//         //identify the data for the correct GP
-//         if (national_air_pollution_data.metadata[i].gp == calledGP){
-//             // write in the different data measures into the yvalues array, using the defined array airKeys
-//             for( j=0; j<airKeys.length; j++){
-//                 yvalues[j].push(national_air_pollution_data.metadata[i][airKeys[j]]);
-//             }
-//         }
-//     };
-
-//     //loop to create all the data traces
-//     let traceData = []
-//     for (i = 0; i < yvalues.length; i++){
-//         traceData[i] = {
-//             x: dateStrings,
-//             y: yvalues[i],
-//             type: "scatter",  
-//             mode: "lines",
-//             name: airKeys[i],
-//             line: {color: i}
-//         }
-//     };
-
-//     // Apply layout settings
-//     let layout = {
-//         title: calledGP,
-//         height: 450,
-//         width: 700,
-//         xaxis: {
-//             autorange: true,
-//             type: 'linear',
-//             rangeselector: {buttons: [
-//                 {    
-//                   count: 7,        
-//                   label: '1 week',        
-//                   step: 'day',        
-//                   stepmode: 'backward'        
-//                 },        
-//                 {        
-//                   count: 1,        
-//                   label: '1 Month',        
-//                   step: 'month',        
-//                   stepmode: 'backward'        
-//                 },
-        
-//                 {step: 'all'}
-        
-//               ]},
-//             rangeslider: {range: [dateStrings[0], dateStrings[dateStrings.length - 1]]},
-//             type: 'date'
-//         },
-//         yaxis: {
-//             autorange: true,
-//             type: 'linear',
-//             title: {
-//                 text: "micrograms/cubic metre"
-//             }
-//         }
-//     };
-
-//     // Render the plot to the div tag with id "time-graph"
-//     Plotly.newPlot("time-graph", traceData, layout);
-
-//     newScat(airKeys[0]);
-
-
+    tag_curve(guess_counter_list, cumulative_tags, guess_list);
+    guess_scatter(guess_counter_list, simliarity_list,  guess_list);
 }
+
+function tag_curve(ex, why, labels){
+    var trace = {
+        x: ex,      
+        y: why,      
+        type: 'scatter',
+        text: labels
+      };
+      
+    // Apply layout settings
+    let layout = {
+        title: "cumulative tags",
+        height: 186,
+        width: 300,
+        xaxis: {
+            autorange: true,
+            type: 'linear',
+            title: {
+                text: "guess"
+            }
+        },
+        yaxis: {
+            range: [2, 100],
+            type: 'linear',
+            title: {
+                text: "% tags revealed"
+            }
+        },
+                
+        margin: {
+            autoexpand: false,
+            l: 25,
+            r: 25,
+            t: 25,
+            b: 25
+        }
+    };
+      var data = [trace];
+      Plotly.newPlot('tag_curve', data, layout);
+};
+
+function guess_scatter(ex, why, labels){
+    // Apply layout settings
+    let layout = {
+        title: "success",
+        height: 186,
+        width: 300,
+        xaxis: {
+            autorange: true,
+            type: 'linear',
+            title: {
+                text: "guess"
+            }
+        },
+        yaxis: {
+            range: [2, 100],
+            type: 'linear',
+            title: {
+                text: "Log(similarity)"
+            }
+        },
+                
+        margin: {
+            autoexpand: false,
+            l: 25,
+            r: 25,
+            t: 25,
+            b: 25
+        }
+    };
+
+        // imported from https://github.com/plotly/plotly.js/issues/4921 
+    var x_data_64 = ex;
+    var y_data_64 = why;
+    var lr = linearRegression(x_data_64, y_data_64);
+    console.log(lr);
+
+    var trace = {x: x_data_64,
+                y: y_data_64,
+                // name: "Scatter",
+                mode: 'markers',
+                text: labels
+                };  
+    console.log(trace);
+
+    var fit_from = Math.min(...x_data_64)
+    var fit_to = Math.max(...x_data_64)
+
+    var fit = {
+        x: [fit_from, fit_to],
+        y: [fit_from*lr.sl+lr.off, fit_to*lr.sl+lr.off],
+        mode: 'lines',
+        type: 'scatter',
+        // name: "R2=".concat((Math.round(lr.r2 * 10000) / 10000).toString())
+    };
+
+    //console.log(fit);
+    var data = [trace,fit];
+    Plotly.newPlot('panel_stats', data, layout);
+};
+
+function linearRegression(x,y){
+    // imported from https://github.com/plotly/plotly.js/issues/4921
+    var lr = {};
+    var n = y.length;
+    var sum_x = 0;
+    var sum_y = 0;
+    var sum_xy = 0;
+    var sum_xx = 0;
+    var sum_yy = 0;
+
+    for (var i = 0; i < y.length; i++) {
+
+        sum_x += x[i];
+        sum_y += y[i];
+        sum_xy += (x[i]*y[i]);
+        sum_xx += (x[i]*x[i]);
+        sum_yy += (y[i]*y[i]);
+    } 
+
+    lr['sl'] = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
+    lr['off'] = (sum_y - lr.sl * sum_x)/n;
+    lr['r2'] = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
+
+    return lr;
+};
 
 function format_keywords(tags){
     var width = 4;
@@ -246,7 +278,7 @@ function hint(){
     // reveal the megahint function once this has been used three times
     if (hint_counter == 3){
         x = document.getElementById("spoil");
-        x.style.visibility = "visible";
+        x.style.display = 'inline';  
     }
 }
 
@@ -262,13 +294,13 @@ function megahint(){
     console.log("megahint")
     //reveal the quit function
     var x = document.getElementById("quit");
-    x.style.visibility = "visible";
+    x.style.display = 'inline';  
     //hide the hint function
     x = document.getElementById("hint");
     x.style.visibility = "hidden";
     //hide this function
     x = document.getElementById("spoil");
-    x.style.visibility = "hidden";
+    x.style.display = 'none';  
 
     megahint_revealed = true;
 
@@ -277,25 +309,26 @@ function megahint(){
 
 function quit(){
     // replace the contents of the main panel with the COMPLETE list
-        d3.select('#keywords').html(format_keywords(answerDict['tags']));
-        // replace the contents of the side panel with the new guess list
-        list_of_guesses = `<p>Nevermind, there's always next time.</p>${list_of_guesses}`;
-        d3.select('#guesses').html(list_of_guesses);
-        let link = "https://www.imdb.com/title/" + answerDict['id'];
-        // replace the contents of the proximity panel with the congrats string
-        quitString = `<p>oh, that's a shame, it was ${answerDict['punc_name']}</p><p><a href= ${link} target=”_blank” > Click here to find out more about ${answerDict['punc_name']}</a></p>`
-        d3.select('#proximity').html(quitString);
-        d3.select('#filmNotFound').html("<p>Don't torture yourself, Gomez. That's my job.</p>");
+    d3.select('#keywords').html(format_keywords(answerDict['tags']));
+    // replace the contents of the side panel with the new guess list
+    list_of_guesses = `<p>Nevermind, there's always next time.</p>${list_of_guesses}`;
+    d3.select('#guesses').html(list_of_guesses);
+    let link = "https://www.imdb.com/title/" + answerDict['id'];
+    // replace the contents of the proximity panel with the congrats string
+    quitString = `<p>oh, that's a shame, it was <a href= ${link} target=”_blank” >${answerDict['punc_name']}</a></p>`
+    d3.select('#proximity').html(quitString);
 
-        //reveal the replay button
-    var x = document.getElementById("replay");
-    x.style.visibility = "visible";
     //hide this function
     x = document.getElementById("quit");
-    x.style.visibility = "hidden";
+    x.style.display = 'none';  
     //hide the guess function
-    x = document.getElementById("guess");
-    x.style.visibility = "hidden";
+    var x = document.getElementById("guessInput");
+    x.style.visibility = "hidden";    
+    var x = document.getElementById("guessClick");
+    x.style.visibility = "hidden";    
+    //reveal the replay button
+    var x = document.getElementById("replay");
+    x.style.display = 'inline';  
     
 
 }
@@ -355,8 +388,12 @@ function init(){
     hint_counter = 0;
     guess_counter = 0;
     megahint_revealed = false;
-    guess_list = [];
+    guess_list = [''];
     tag_list = [];
+    cumulative_tags = [0];
+    guess_counter_list = [0];
+    simliarity_list = [0];
+    colour = '';
     
     // instantiate answer
     randKey = getAnswer();
@@ -370,29 +407,36 @@ function init(){
     answer_tags = answerDict['tags'];
 
     // set up blank spaces
-    d3.select('#filmNotFound').html("<p>film_dict loaded. there are " + films.length + " entries in solution set. Type a film and hit enter or click guess...</p>");
-    d3.select('#guesses').html("<p>Guesses will appear here</p>");
-    d3.select('#proximity').html("<p> Tags will appear here</p> ");
+    d3.select('#proximity').html("<p>film_dict loaded. there are " + films.length + " entries in solution set. Type a film and hit enter or click guess...</p>");
+    d3.select('#guesses').html("<p></p>");
     d3.select('#keywords').html(format_keywords(answer_tags));
 
+    // hide all of the answer tags; they will be revealed as guesses are made.
     for (i=0; i<answer_tags.length; i++){
         var x = document.getElementById(i);
         x.style.visibility = "hidden";    
     }
 
     // show or hide buttons as necessary
-    var x = document.getElementById("guess");
+    var x = document.getElementById("guessInput");
+    x.style.visibility = "visible";    
+    var x = document.getElementById("guessClick");
     x.style.visibility = "visible";    
     x = document.getElementById("hint");
     x.style.visibility = "visible";
     x = document.getElementById("spoil");
-    x.style.visibility = "hidden";
+    x.style.display = 'none';  
     x = document.getElementById("quit");
-    x.style.visibility = "hidden";
+    x.style.display = 'none'; 
     x = document.getElementById("replay");
-    x.style.visibility = "hidden";
+    x.style.display = 'none'; 
+
+    
+    tag_curve(guess_counter_list, cumulative_tags, guess_list);
+    guess_scatter(guess_counter_list, simliarity_list,  guess_list);
 }
 
+//instantiate all the variables and holding arrays
 let film_dict = {};
 
 let guessRaw = "";
@@ -409,11 +453,15 @@ var answer_tags = [];
 let list_of_guesses = '';
 let hint_counter = 0;
 let megahint_revealed = false;
+let cumulative_tags = [];
+let guess_counter_list = [];
+let simliarity_list = [];
 
+let colour = ''
 
+// load json fils
 var url20 = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_100.json";
 console.log("please wait while data loads");
-d3.select('#filmNotFound').html("<p>please wait while data loads</p>");
 
 d3.json(url20).then(function(response) {
     film_dict = response;

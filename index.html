@@ -15,11 +15,13 @@
     <div class="collapse" id="navbarToggleExternalContent">
         <div class="bg-dark p-4">
             <h4 class="text-white">Taggle (or whatver it will be called)</h4>
-            <span class="text-muted">This is a game about films. Every film on IMDB.com has a list of keywords, submitted by avid film fans. 
+            <span class="text-muted" id="bunf">This is a game about films. Every film on IMDB.com has a list of keywords, submitted by avid film fans. 
                 These lists often run into the hundreds, with various plot elements described, and are ranked by other users based on how useful they think they are.
+
                 You know how this works; there's a secret film I've chosen that you have to guess.
-                If your guess is right, well done!
-                If your guess is wrong, I will reveal the tags for the right answer that your guess has in common. 
+                If your guess is wrong, I will reveal the tags that your guess has in common with the correct film. 
+                Visual feedback is provided.
+
             </span>
         </div>
     </div>
@@ -32,34 +34,33 @@
 </div>
 <div class="container">
         <div class="row">
-            <div class="col-md-8" id="guess">
-
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Guess a movie" aria-label="guess input" id="guessInput" aria-describedby="basic-addon2" onchange="guessed(this.value)">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="guessButton" onclick="guessed(guessInput.value)">Guess</button>
-                        <button class="btn btn-outline-secondary" type="button" id="hint" onclick="hint()">Random</button>
-                        <button class="btn btn-outline-secondary" type="button" id="spoil" onclick="megahint()">Reveal Tags</button>
-                        <button class="btn btn-outline-secondary" type="button" id="quit" onclick="quit()">Give up</button>
-                        <button class="btn btn-outline-secondary" type="button" id="replay" onclick="init()">Play again</button>
-                    </div>
-                </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control " placeholder="Guess a movie" aria-label="guess input" id="guessInput" aria-describedby="basic-addon2" onchange="guessed(this.value)">
+                <button class="btn btn-outline-secondary" type="button" id="guessClick" onclick="guessed(guessInput.value)">Guess</button>
+                <button class="btn btn-outline-secondary" type="button" id="hint" onclick="hint()">Random</button>
+                <button class="btn btn-outline-secondary" type="button" id="spoil" onclick="megahint()">Reveal Tags</button>
+                <button class="btn btn-outline-secondary" type="button" id="quit" onclick="quit()">Give up</button>
+                <button class="btn btn-outline-secondary" type="button" id="replay" onclick="init()">Play again</button>
             </div>
-            <div class="col-md-4">
-                <div id="filmNotFound" class="panel panel-primary">
+            <div class="col-md-3">
+                <div id="proximity" class="panel panel-primary">
+                    <button class="btn btn-primary" type="button" disabled>
+                        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
-                <div class="panel stats">
+                <div id="panel_stats"  class="panel panel-primary">
                 </div>
                 <div id="guesses" class="panel panel-primary">
                 </div>
             </div>
             <div class="col-md-8">
                 <div class="panel panel-primary">
-                    <div id="proximity"></div>
+                    <div id="tag_curve"></div>
                     <div id="keywords" class="panel-body"></div>
                 </div>
             </div>
@@ -67,7 +68,7 @@
     </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     
     <link rel="stylesheet" href="static/css/style.css" />
     <script src="static/js/app.js"></script>
