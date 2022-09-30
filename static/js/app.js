@@ -356,7 +356,9 @@ function getRandomAnswer(){
 
 function getAnswer(){
     d3.json(answerDict).then(function(response) {
+        console.log(response);
         let todaysAnswer = response[0];
+        console.log(todaysAnswer);
         for (i=0; i<films.length; i++){
             if(todaysAnswer == film_dict[i]['id']){
                 return films[i];
