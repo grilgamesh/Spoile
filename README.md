@@ -1,5 +1,5 @@
 # Taggl
-Can you guess the movie based on the plot keywords? A wordle-like film guessing game.  The latest playable build of the game is playable live at https://grilgamesh.github.io/Taggle/
+Can you guess the movie based on the plot keywords? A wordle-like film guessing game.  The latest playable build of the game is playable live at https://grilgamesh.github.io/Spoile/
 
 ## Technology used
 - Python to import data and proof of concept
