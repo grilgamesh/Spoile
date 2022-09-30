@@ -84,7 +84,13 @@ function guessed(guessRaw) {
                 // Calculate the similarity for bar chart as the % of tags in common (compared to the answer tags), processed as a log base 10, and then multiplied by 50.
                 // This converts the log - which will have been between 0 and 2, to a new percentage that is less cramped in single digits.
                 // I do this because the tags do seem to be on a log scale, with even closely related films only scoring about 33% tags in common.
-                var logSimilarity = Math.round(Math.log10(common_tags.length*100/(answer_tags.length))*50);
+                if (similarity==0){
+                    // can't take log of 0, so quick fix to stop regression line breaking
+                    var logSimilarity = 0
+                }
+                else{
+                    var logSimilarity = Math.round(Math.log10(common_tags.length*100/(answer_tags.length))*50);
+                }
                 simliarity_list.push(logSimilarity);
                 // replace the contents of the side panel with the new guess list
                 if(logSimilarity<50){
@@ -260,7 +266,7 @@ function format_keywords(tags){
 function hint(){
     console.log("hint activated")
     // guess a random film
-    randHint = getAnswer();
+    randHint = getRandomAnswer();
     // remove confusing punctuation and forgettable words from the hint
     randHint = year_remover(randHint);
     hintKey = SPAG_remover(randHint);
@@ -348,26 +354,23 @@ function getRandomAnswer(){
     let randKey = films[randIndex];
     // if this film has fewer than 100 tags, reroll. This will filter out some unguessable solutions.
     if (film_dict[randKey]['tags'].length < 100){
-        randKey = getAnswer();
+        randKey = getRandomAnswer();
     }
 
     return randKey;
 }
 
 function getAnswer(){
-    d3.json(answerDict).then(function(response) {
-        console.log(response);
-        let todaysAnswer = response[0];
-        console.log(todaysAnswer);
-        for (i=0; i<films.length; i++){
-            if(todaysAnswer == film_dict[i]['id']){
-                return films[i];
-            }
-            else{
-                return films[0];
-            }
+    console.log("getting answer");
+    const d = new Date().getDate();
+    let todaysAnswer = answer_set[(d-1)];
+    console.log(todaysAnswer);
+    for (i=0; i<films.length; i++){
+        if(todaysAnswer == film_dict[films[i]]['id']){
+            return films[i];
         }
-    })
+    }
+            return films[0];
 }
 
 
@@ -413,13 +416,13 @@ function init(){
     colour = '';
     
     // instantiate answer
-    randKey = getAnswer();
-    console.log(randKey);
+    key = getAnswer();
+    console.log("got answer " + key);
     // remove year from the answerKey
-    answerKey = year_remover(randKey);
+    answerKey = year_remover(key);
     console.log(answerKey);
     // Use the key to get the corresponding name from the "names" object
-    answerDict = film_dict[randKey];
+    answerDict = film_dict[key];
     console.log(answerDict);
     answer_tags = answerDict['tags'];
 
@@ -455,6 +458,7 @@ function init(){
 
 //instantiate all the variables and holding arrays
 let film_dict = {};
+let answer_set = {};
 
 let guessRaw = "";
 let guess = "";
@@ -481,11 +485,15 @@ var data_dict = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_100.json
 var answer_dict = "https://grilgamesh.github.io/Taggle/data/Halloween_2022.json";
 console.log("please wait while data loads");
 
-d3.json(data_dict).then(function(response) {
-    film_dict = response;
-    films = Object.keys(film_dict)
-    console.log("film_dict loaded. there are " + films.length + " entries in solution set");
-    console.log(films);
+d3.json(data_dict).then(function(response1) {
+    d3.json(answer_dict).then(function(response2) {
+        film_dict = response1;
+        answer_set = response2;
+        films = Object.keys(film_dict)
+        console.log(films);
+        console.log("film_dict loaded. there are " + films.length + " entries in solution set");
+        console.log(response2);
 
-    init();
+        init();
+    })
 })
