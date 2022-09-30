@@ -333,7 +333,7 @@ function quit(){
 
 }
 
-function getAnswer(){
+function getRandomAnswer(){
     // currently, solution will be randomly selected during development.
     // eventually this will be a date-related function like wordle.
 
@@ -353,6 +353,21 @@ function getAnswer(){
 
     return randKey;
 }
+
+function getAnswer(){
+    d3.json(answerDict).then(function(response) {
+        let todaysAnswer = response[0];
+        for (i=0; i<films.length; i++){
+            if(todaysAnswer == film_dict[i]['id']){
+                return films[i];
+            }
+            else{
+                return films[0];
+            }
+        }
+    })
+}
+
 
 
 function SPAG_remover(word){
@@ -460,10 +475,11 @@ let simliarity_list = [];
 let colour = ''
 
 // load json fils
-var url20 = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_100.json";
+var data_dict = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_100.json";
+var answer_dict = "https://grilgamesh.github.io/Taggle/data/Halloween_2022.json";
 console.log("please wait while data loads");
 
-d3.json(url20).then(function(response) {
+d3.json(data_dict).then(function(response) {
     film_dict = response;
     films = Object.keys(film_dict)
     console.log("film_dict loaded. there are " + films.length + " entries in solution set");
