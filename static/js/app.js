@@ -402,7 +402,7 @@ function tag_display(tag_list){
     }
 }
 
-function init(){
+function init(endless){
     //re-initate variables as necessary
     list_of_guesses = '';
     hint_counter = 0;
@@ -416,7 +416,13 @@ function init(){
     colour = '';
     
     // instantiate answer
+    // 
+    if (endless == false){
     key = getAnswer();
+    }
+    else{
+        key = getRandomAnswer();
+    }
     console.log("got answer " + key);
     // remove year from the answerKey
     answerKey = year_remover(key);
@@ -427,7 +433,8 @@ function init(){
     answer_tags = answerDict['tags'];
 
     // set up blank spaces
-    d3.select('#proximity').html("<p>film_dict loaded. there are " + films.length + " entries in solution set. Type a film and hit enter or click guess...</p>");
+    const d = new Date();
+    d3.select('#proximity').html(`<p>Daily puzzle loaded for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}</p>`);
     d3.select('#guesses').html("<p></p>");
     d3.select('#keywords').html(format_keywords(answer_tags));
 
@@ -491,9 +498,8 @@ d3.json(data_dict).then(function(response1) {
         answer_set = response2;
         films = Object.keys(film_dict)
         console.log(films);
-        console.log("film_dict loaded. there are " + films.length + " entries in solution set");
         console.log(response2);
 
-        init();
+        init(false);
     })
 })
