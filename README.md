@@ -1,11 +1,13 @@
-# Taggl
+# Spoile
 Can you guess the movie based on the plot keywords? A wordle-like film guessing game.  The latest playable build of the game is playable live at https://grilgamesh.github.io/Spoile/
 
 ## Technology used
 - Python to import data and proof of concept
 - Beautiful for webscraping to import
 - HTML and CSS for presentation to the internet
-- D3 for handling the JSon 
+- D3 for handling the JSon, live-editing html
+- Plotly for handling graphs
+- Javascript for running the program and handling user input
 
 ## Files included
 In the python folder are the Jupyter Notebook files Taggle and Taggle_webscraper. The Taggle_webscraper file was used to build a JSon file from the IMDB website and does not need to be run in order to use the game. It saves Json files of various sizes into the Data folder, so that a the game's difficulty can be adjusted by choosing smaller or larger datasets. The Taggle file itself is fully functional and can be run off-line if the user chooses.  
