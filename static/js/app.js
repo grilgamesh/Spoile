@@ -136,7 +136,7 @@ function tag_curve(ex, why, labels){
             }
         },
         yaxis: {
-            range: [2, 100],
+            range: [-10, 100],
             type: 'linear',
             title: {
                 text: "% tags revealed"
@@ -169,7 +169,7 @@ function guess_scatter(ex, why, labels){
             }
         },
         yaxis: {
-            range: [2, 100],
+            range: [-10, 100],
             type: 'linear',
             title: {
                 text: "Log(similarity)"
