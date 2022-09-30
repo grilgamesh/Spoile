@@ -481,8 +481,8 @@ let simliarity_list = [];
 let colour = ''
 
 // load json fils
-var data_dict = "https://grilgamesh.github.io/Taggle/data/imdb_tag_game_100.json";
-var answer_dict = "https://grilgamesh.github.io/Taggle/data/Halloween_2022.json";
+var data_dict = "https://grilgamesh.github.io/Spoile/data/imdb_tag_game_100.json";
+var answer_dict = "https://grilgamesh.github.io/Spoile/data/Halloween_2022.json";
 console.log("please wait while data loads");
 
 d3.json(data_dict).then(function(response1) {
