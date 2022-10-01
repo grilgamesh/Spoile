@@ -438,9 +438,6 @@ function init(endless){
     console.log(answerDict);
     answer_tags = answerDict['tags'];
 
-    // set up blank spaces
-    const d = new Date();
-    d3.select('#proximity').html(`<p>Daily puzzle loaded for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}</p>`);
     d3.select('#guesses').html("<p></p>");
     d3.select('#keywords').html(format_keywords(answer_tags));
 
