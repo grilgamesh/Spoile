@@ -45,7 +45,10 @@ function guessed(guessRaw) {
         cumulative_tags.push(100);
         guess_counter_list.push(guess_counter);
     }    
-    else{
+    else{  
+        // 👇️ clear input field
+        document.getElementById('guessInput').value = '';
+
         for (i=0; i<films.length; i++){
             if (guess == year_remover(films[i])){
                 var guess_Dict = film_dict[films[i]];
@@ -419,9 +422,12 @@ function init(endless){
     // 
     if (endless == false){
     key = getAnswer();
+    const d = new Date();
+    d3.select('#proximity').html(`<p>Daily puzzle loaded for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}</p>`);
     }
     else{
         key = getRandomAnswer();
+        d3.select('#proximity').html(`<p>Now playing in random mode, good luck!</p>`);
     }
     console.log("got answer " + key);
     // remove year from the answerKey
