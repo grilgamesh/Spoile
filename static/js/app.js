@@ -46,8 +46,6 @@ function guessed(guessRaw) {
         guess_counter_list.push(guess_counter);
     }    
     else{  
-        // 👇️ clear input field
-        document.getElementById('guessInput').value = '';
 
         for (i=0; i<films.length; i++){
             if (guess == year_remover(films[i])){
@@ -111,6 +109,9 @@ function guessed(guessRaw) {
 
                 // add the proper name to the guess list
                 guess_list.push(guess_Dict['punc_name']);
+                
+                // 👇️ clear input field
+                document.getElementById('guessInput').value = '';
                 break;
             }
             else{
