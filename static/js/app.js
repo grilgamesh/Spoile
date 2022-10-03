@@ -44,6 +44,15 @@ function guessed(guessRaw) {
         
         cumulative_tags.push(100);
         guess_counter_list.push(guess_counter);
+
+        textToTweet = `${bunf}
+${guess_counter}:🟢 100%!
+${textToTweet}`;
+        console.log(textToTweet);
+        if (endless==false){
+            tweet();
+        };
+
     }    
     else{  
 
@@ -94,11 +103,20 @@ function guessed(guessRaw) {
                 }
                 simliarity_list.push(logSimilarity);
                 // replace the contents of the side panel with the new guess list
-                if(logSimilarity<50){
-                    colour = "info"
+                if(logSimilarity<25){
+                    colour = "danger"
+                    textToTweet = `${guess_counter}:🔴 ${similarity}%
+${textToTweet}`
+                }
+                else if(logSimilarity<50){
+                    colour = "warning"
+                    textToTweet = `${guess_counter}:🟡 ${similarity}%
+${textToTweet}`
                 }
                 else{
-                    colour = "warning"
+                    colour = "";
+                    textToTweet = `${guess_counter}:🔵 ${similarity}%
+${textToTweet}`
                 }
                 list_of_guesses = `<p>${guess_counter}: ${guess_Dict['punc_name']} ${similarity}% similarity</p>
                     <div class="progress">
@@ -314,6 +332,9 @@ function megahint(){
 
     megahint_revealed = true;
 
+    textToTweet = `🔎 Revealed tags
+${textToTweet}`
+
 
 }
 
@@ -339,8 +360,30 @@ function quit(){
     //reveal the replay button
     var x = document.getElementById("replay");
     x.style.display = 'inline';  
+
+    
+    textToTweet = `${bunf}
+💀 gave up
+${textToTweet}`
+    console.log(textToTweet);
+
+    if (endless==false){
+        tweet();
+    };
     
 
+}
+
+function tweet(){
+    // update the side panel with the share button
+    list_of_guesses = `<button onclick="tweet2()">Copy results to clipboad!</button>
+    ${list_of_guesses}`
+    d3.select('#guesses').html(list_of_guesses);
+
+}
+function tweet2(){
+    // Copy the text to tweet
+    navigator.clipboard.writeText(textToTweet);
 }
 
 function getRandomAnswer(){
@@ -418,13 +461,13 @@ function init(endless){
     guess_counter_list = [0];
     simliarity_list = [0];
     colour = '';
+    textToTweet = 'https://grilgamesh.github.io/Spoile/';
     
     // instantiate answer
     // 
     if (endless == false){
     key = getAnswer();
-    const d = new Date();
-    d3.select('#proximity').html(`<p>Daily puzzle loaded for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}</p>`);
+    d3.select('#proximity').html(`<p>${bunf}</p>`);
     }
     else{
         key = getRandomAnswer();
@@ -489,7 +532,12 @@ let cumulative_tags = [];
 let guess_counter_list = [];
 let simliarity_list = [];
 
+let textToTweet = '';
+
 let colour = ''
+let endless = false;
+const d = new Date();
+let bunf = `Daily Spoooktober Spoile for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`;
 
 // load json fils
 var data_dict = "https://grilgamesh.github.io/Spoile/data/imdb_tag_game_100.json";
