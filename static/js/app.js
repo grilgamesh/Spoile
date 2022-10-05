@@ -47,7 +47,8 @@ function guessed(guessRaw) {
 
         textToTweet = `${bunf}
 ${guess_counter}:🟢 100%!
-${textToTweet}`;
+${textToTweet}
+#Spoile;`
         console.log(textToTweet);
         if (endless==false){
             tweet();
@@ -57,7 +58,7 @@ ${textToTweet}`;
     else{  
 
         for (i=0; i<films.length; i++){
-            if (guess == year_remover(films[i])){
+            if (guess == SPAG_remover(year_remover(films[i]))){
                 var guess_Dict = film_dict[films[i]];
                 var guess_tags = guess_Dict['tags'];
                 if (guess_list.includes(guess_Dict['punc_name'])){
@@ -364,7 +365,8 @@ function quit(){
     
     textToTweet = `${bunf}
 💀 gave up
-${textToTweet}`
+${textToTweet}
+#Spoile`
     console.log(textToTweet);
 
     if (endless==false){
@@ -426,8 +428,8 @@ function SPAG_remover(word){
     // method to remove punctuation from text, in order to make the game less annoyingly precise, e.g. user might type 'spiderman' instead of 'spider-man'
     // also removes common words 'the' and 'and'.
     // also removes spaces, so that e.g. 'bat man' and 'batman' are identical.
-    cleanWord = word.toLowerCase().replace(/the /gi, '').replace(/ and /gi, '').replace(/[.,\/#!¡$%\·^&\*;:{}=\-_`'~()]/g,"").replace(/\s/g,"").replace(/¢/gi, 'c');    
-    console.log(cleanWord);
+    // also changes letters with accents to the normal version, in case of films like Amelie.
+    cleanWord = word.toLowerCase().replace(/the /gi, '').replace(/ and /gi, '').replace(/[.,\/#!¡$%\·^&\*;:{}=\-_`'~()]/g,"").replace(/\s/g,"").replace(/¢/gi, 'c').normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '');    
     return cleanWord;
 }
 
@@ -474,8 +476,8 @@ function init(endless){
         d3.select('#proximity').html(`<p>Now playing in random mode, good luck!</p>`);
     }
     console.log("got answer " + key);
-    // remove year from the answerKey
-    answerKey = year_remover(key);
+    // remove year and special characters from the answerKey
+    answerKey = SPAG_remover(year_remover(key));
     console.log(answerKey);
     // Use the key to get the corresponding name from the "names" object
     answerDict = film_dict[key];
@@ -506,8 +508,8 @@ function init(endless){
     x.style.display = 'none'; 
 
     
-    tag_curve(guess_counter_list, cumulative_tags, guess_list);
-    guess_scatter(guess_counter_list, simliarity_list,  guess_list);
+    // tag_curve(guess_counter_list, cumulative_tags, guess_list);
+    // guess_scatter(guess_counter_list, simliarity_list,  guess_list);
 }
 
 //instantiate all the variables and holding arrays
