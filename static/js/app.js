@@ -51,7 +51,7 @@ ${textToTweet}
 #Spoile;`
         console.log(textToTweet);
         if (endless==false){
-            tweet();
+            show_tweet_button();
         };
 
     }    
@@ -75,15 +75,11 @@ ${textToTweet}
 
                     guess_counter++;
 
-                    // old code:
-
                     tag_list = common_tags.concat(tag_list.filter((item) => common_tags.indexOf(item) < 0));
-                    // replace the contents of the main panel with the new tags list
-                    //old code: 
-                    // var tag_list_html = format_keywords(tag_list);
-                    // d3.select('#keywords').html(tag_list_html);
 
+                    // replace the contents of the main panel with the new tags list
                     var progress = Math.round(tag_list.length*100/(answer_tags.length));
+
                     // replace the contents of the proximity panel with the new proximity
                     d3.select('#proximity').html("<p>" + progress + "% of tags revealed</p>");
                     cumulative_tags.push(progress);
@@ -119,7 +115,9 @@ ${textToTweet}`
                     textToTweet = `${guess_counter}:🔵 ${similarity}%
 ${textToTweet}`
                 }
-                list_of_guesses = `<p>${guess_counter}: ${guess_Dict['punc_name']} ${similarity}% similarity</p>
+                list_of_guesses = `
+                </br>
+                ${guess_counter}: ${guess_Dict['punc_name']}: ${similarity}%
                     <div class="progress">
                         <div class="progress-bar bg-${colour}" role="progressbar" style="width: ${logSimilarity}%" aria-valuenow="${logSimilarity}" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>${list_of_guesses}`;
@@ -370,34 +368,27 @@ ${textToTweet}
     console.log(textToTweet);
 
     if (endless==false){
-        tweet();
+        show_tweet_button();
     };
     
 
 }
 
-function tweet(){
+function show_tweet_button(){
     // update the side panel with the share button
-    list_of_guesses = `<button onclick="tweet2()">Copy results to clipboad!</button>
+    list_of_guesses = `<button onclick="copy_Tweet()">Copy results to clipboad!</button>
     ${list_of_guesses}`
     d3.select('#guesses').html(list_of_guesses);
 
 }
-function tweet2(){
+function copy_Tweet(){
     // Copy the text to tweet
     navigator.clipboard.writeText(textToTweet);
 }
 
 function getRandomAnswer(){
-    // currently, solution will be randomly selected during development.
-    // eventually this will be a date-related function like wordle.
-
     // Generate random index based on number of keys
     const randIndex = Math.floor(Math.random() * films.length);
-
-    // weight the randomiser to the early end by using natural log (experimental)
-    // const base = 50
-    // const randIndex = Math.ceil(base**(Math.random() * Math.log(films.length)/Math.log(base)));
 
     // Select a key from the array of keys using the random index
     let randKey = films[randIndex];
@@ -463,7 +454,7 @@ function init(endless){
     guess_counter_list = [0];
     simliarity_list = [0];
     colour = '';
-    textToTweet = 'https://grilgamesh.github.io/Spoile/';
+    textToTweet = 'https://grilgamesh.github.io/Spoile/ #Spoile';
     
     // instantiate answer
     // 
