@@ -362,9 +362,8 @@ function quit(){
 
     
     textToTweet = `${bunf}
-💀 gave up
-${textToTweet}
-#Spoile`
+💀 Gave up...
+${textToTweet}`
     console.log(textToTweet);
 
     if (endless==false){
@@ -403,14 +402,17 @@ function getRandomAnswer(){
 function getAnswer(){
     console.log("getting answer");
     const d = new Date().getDate();
-    let todaysAnswer = answer_set[(d-1)];
+    // let todaysAnswer = answer_set[(d-1)];
+    todaysAnswer = "tt0107120";
     console.log(todaysAnswer);
     for (i=0; i<films.length; i++){
         if(todaysAnswer == film_dict[films[i]]['id']){
+            console.log(`found ${films[i]['punc_name']}`);
             return films[i];
         }
     }
-            return films[0];
+    console.log("failed to find today's film, defaulting to The Shawshank Redemption");
+    return films[0];
 }
 
 
@@ -442,13 +444,14 @@ function tag_display(tag_list){
     }
 }
 
-function init(endless){
+function init(endless_mode){
+    endless = endless_mode;
     //re-initate variables as necessary
     list_of_guesses = '';
     hint_counter = 0;
     guess_counter = 0;
     megahint_revealed = false;
-    guess_list = [''];
+    guess_list = [''];endless
     tag_list = [];
     cumulative_tags = [0];
     guess_counter_list = [0];
