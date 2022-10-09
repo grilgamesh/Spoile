@@ -402,8 +402,7 @@ function getRandomAnswer(){
 function getAnswer(){
     console.log("getting answer");
     const d = new Date().getDate();
-    // let todaysAnswer = answer_set[(d-1)];
-    todaysAnswer = "tt0107120";
+    let todaysAnswer = answer_set[(d-1)];
     console.log(todaysAnswer);
     for (i=0; i<films.length; i++){
         if(todaysAnswer == film_dict[films[i]]['id']){
