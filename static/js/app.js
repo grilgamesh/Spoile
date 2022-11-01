@@ -43,12 +43,12 @@ function guessed(guessRaw) {
         x.style.display = 'inline';  
         
         cumulative_tags.push(100);
+        simliarity_list.push(100);
         guess_counter_list.push(guess_counter);
 
         textToTweet = `${bunf}
 ${guess_counter}:🟢 100%!
-${textToTweet}
-#Spoile;`
+${textToTweet}`
         console.log(textToTweet);
         if (endless==false){
             show_tweet_button();
@@ -163,7 +163,7 @@ function tag_curve(ex, why, labels){
             }
         },
         yaxis: {
-            range: [-10, 100],
+            range: [-10, 104],
             type: 'linear',
             title: {
                 text: "% tags revealed"
@@ -196,7 +196,7 @@ function guess_scatter(ex, why, labels){
             }
         },
         yaxis: {
-            range: [-10, 100],
+            range: [-10, 104],
             type: 'linear',
             title: {
                 text: "Log(similarity)"
@@ -530,7 +530,7 @@ let simliarity_list = [];
 let textToTweet = '';
 
 let colour = ''
-let endless = false;
+let endless = true;
 const d = new Date();
 let bunf = `Daily Spoooktober Spoile for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`;
 
@@ -547,6 +547,6 @@ d3.json(data_dict).then(function(response1) {
         console.log(films);
         console.log(response2);
 
-        init(false);
+        init(endless);
     })
 })
