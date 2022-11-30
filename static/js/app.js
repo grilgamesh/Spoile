@@ -530,13 +530,13 @@ let simliarity_list = [];
 let textToTweet = '';
 
 let colour = ''
-let endless = true;
+let endless = false;
 const d = new Date();
 let bunf = `Daily Spoooktober Spoile for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`;
 
 // load json fils
 var data_dict = "https://grilgamesh.github.io/Spoile/data/imdb_tag_game_100.json";
-var answer_dict = "https://grilgamesh.github.io/Spoile/data/Halloween_2022.json";
+var answer_dict = "https://grilgamesh.github.io/Spoile/data/xmas_2022.json";
 console.log("please wait while data loads");
 
 d3.json(data_dict).then(function(response1) {
