@@ -532,7 +532,7 @@ let textToTweet = '';
 let colour = ''
 let endless = false;
 const d = new Date();
-let bunf = `Daily Spoooktober Spoile for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`;
+let bunf = `Daily Advent Spoile for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`;
 
 // load json fils
 var data_dict = "https://grilgamesh.github.io/Spoile/data/imdb_tag_game_100.json";
