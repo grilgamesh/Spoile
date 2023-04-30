@@ -537,17 +537,17 @@ console.log("please wait while data loads");
       
  // To set present_dates to two variables
  var present_date = new Date();
-   
  // 0-11 is Month in JavaScript
  var start_date = new Date(2023, 04, 01)
  
+ 
+ // To Calculate the result in milliseconds and then converting into days
+ var Result = Math.round(start_date.getTime() 
+ - present_date.getTime()) / (one_day);
  // To remove the decimals from the (Result) resulting days value
  var index = Result.toFixed(0);
 
-   // To Calculate the result in milliseconds and then converting into days
-   var Result = Math.round(start_date.getTime() 
-   - present_date.getTime()) / (one_day);
-   console.log(`Dtae today is ${present_date}, ${index} days since${start_date}`);
+ console.log(`Date today is ${present_date}, ${index} days since${start_date}`);
 
 
 d3.json(data_dict).then(function(response1) {
