@@ -442,7 +442,7 @@ function tag_display(tag_list){
     }
 }
 
-function init(endless_mode){
+function init(endless_mode, index){
     endless = endless_mode;
     //re-initate variables as necessary
     list_of_guesses = '';
@@ -460,7 +460,7 @@ function init(endless_mode){
     // instantiate answer
     // 
     if (endless == false){
-    key = getAnswer();
+    key = index;
     d3.select('#proximity').html(`<p>${bunf}</p>`);
     }
     else{
@@ -472,7 +472,7 @@ function init(endless_mode){
     answerKey = SPAG_remover(year_remover(key));
     console.log(answerKey);
     // Use the key to get the corresponding name from the "names" object
-    answerDict = film_dict[index];
+    answerDict = film_dict[key];
     console.log(answerDict);
     answer_tags = answerDict['tags'];
 
@@ -554,6 +554,7 @@ console.log("please wait while data loads");
 
 // To remove the decimals from the (Result) resulting days value
 var index = Result.toFixed(0);
+
 d3.json(data_dict).then(function(response1) {
     d3.json(answer_dict).then(function(response2) {
         film_dict = response1;
@@ -562,6 +563,6 @@ d3.json(data_dict).then(function(response1) {
         console.log(films);
         console.log(response2);
 
-        init(endless);
+        init(endless, index);
     })
 })
