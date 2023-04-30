@@ -401,8 +401,7 @@ function getRandomAnswer(){
 
 function getAnswer(){
     console.log("getting answer");
-    const d = new Date().getDate();
-    let todaysAnswer = answer_set[(d-1)];
+    let todaysAnswer = answer_set[index];
     console.log(todaysAnswer);
     for (i=0; i<films.length; i++){
         if(todaysAnswer == film_dict[films[i]]['id']){
@@ -532,13 +531,29 @@ let textToTweet = '';
 let colour = ''
 let endless = false;
 const d = new Date();
-let bunf = `Daily Advent Spoile for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`;
+let bunf = `Daily Spoile for ${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`;
 
 // load json fils
 var data_dict = "https://grilgamesh.github.io/Spoile/data/imdb_tag_game_100.json";
-var answer_dict = "https://grilgamesh.github.io/Spoile/data/xmas_2022.json";
+var answer_dict = "https://grilgamesh.github.io/Spoile/data/2023.json";
 console.log("please wait while data loads");
 
+//code to calculate datediff
+ // One day Time in ms (milliseconds)
+ var one_day = 1000 * 60 * 60 * 24
+      
+ // To set present_dates to two variables
+ var present_date = new Date();
+   
+ // 0-11 is Month in JavaScript
+ var start_date = new Date(2023, 04, 01)
+
+   // To Calculate the result in milliseconds and then converting into days
+   var Result = Math.round(start_date.getTime() 
+   - present_date.getTime()) / (one_day);
+
+// To remove the decimals from the (Result) resulting days value
+var index = Result.toFixed(0);
 d3.json(data_dict).then(function(response1) {
     d3.json(answer_dict).then(function(response2) {
         film_dict = response1;
