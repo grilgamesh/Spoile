@@ -455,7 +455,7 @@ function init(endless_mode, index){
     // instantiate answer
     // 
     if (endless == false){
-        key = answer_dict[index];
+        key = answer_set[index];
         d3.select('#proximity').html(`<p>${bunf}</p>`);
     }
     else{
@@ -556,7 +556,7 @@ d3.json(data_dict).then(function(response1) {
         answer_set = response2;
         films = Object.keys(film_dict)
         console.log(films);
-        console.log(response2);
+        console.log(answer_set);
 
         init(endless, index);
     })
