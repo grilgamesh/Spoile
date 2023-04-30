@@ -403,12 +403,7 @@ function getAnswer(){
     console.log(`getting answer ${index}`);
     let todaysAnswer = answer_set[index];
     console.log(todaysAnswer);
-    for (i=0; i<films.length; i++){
-        if(todaysAnswer == film_dict[films[i]]['id']){
-            console.log(`found ${films[i]['punc_name']}`);
-            return films[i];
-        }
-    }
+    return film_dict[todaysAnswer];
     console.log("failed to find today's film, defaulting to The Shawshank Redemption");
     return films[0];
 }
@@ -460,8 +455,8 @@ function init(endless_mode, index){
     // instantiate answer
     // 
     if (endless == false){
-    key = index;
-    d3.select('#proximity').html(`<p>${bunf}</p>`);
+        key = answer_dict[index];
+        d3.select('#proximity').html(`<p>${bunf}</p>`);
     }
     else{
         key = getRandomAnswer();
