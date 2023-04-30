@@ -400,7 +400,7 @@ function getRandomAnswer(){
 }
 
 function getAnswer(){
-    console.log("getting answer");
+    console.log(`getting answer ${index}`);
     let todaysAnswer = answer_set[index];
     console.log(todaysAnswer);
     for (i=0; i<films.length; i++){
@@ -472,7 +472,7 @@ function init(endless_mode){
     answerKey = SPAG_remover(year_remover(key));
     console.log(answerKey);
     // Use the key to get the corresponding name from the "names" object
-    answerDict = film_dict[key];
+    answerDict = film_dict[index];
     console.log(answerDict);
     answer_tags = answerDict['tags'];
 
