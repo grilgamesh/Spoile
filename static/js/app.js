@@ -542,11 +542,11 @@ console.log("please wait while data loads");
  
  
  // To Calculate the result in milliseconds and then converting into days
- var Result = Math.round(present_date.getTime())  - start_date.getTime() / (one_day);
+ var Result = Math.floor((present_date.getTime()  - start_date.getTime()) / (one_day));
  // To remove the decimals from the (Result) resulting days value
  var index = Result.toFixed(0);
 
- console.log(`Date today is ${present_date}, ${index} days since${start_date}`);
+ console.log(`Date today is ${present_date}, ${index} days since ${start_date}`);
 
 
 d3.json(data_dict).then(function(response1) {
@@ -554,8 +554,8 @@ d3.json(data_dict).then(function(response1) {
         film_dict = response1;
         answer_set = response2;
         films = Object.keys(film_dict)
-        console.log(films);
-        console.log(answer_set);
+        // console.log(films);
+        // console.log(answer_set);
 
         init(endless, index);
     })
