@@ -542,8 +542,7 @@ console.log("please wait while data loads");
  
  
  // To Calculate the result in milliseconds and then converting into days
- var Result = Math.round(start_date.getTime() 
- - present_date.getTime()) / (one_day);
+ var Result = Math.round(present_date.getTime())  - start_date.getTime() / (one_day);
  // To remove the decimals from the (Result) resulting days value
  var index = Result.toFixed(0);
 
