@@ -309,6 +309,26 @@ function hint(){
     }
 }
 
+function meta(){
+    console.log("metadata revealed")
+    //hide this function
+    x = document.getElementById("meta");
+    x.style.display = 'none'; 
+    // get year from title
+    let year = key.substring(key.length-6, key.length)
+    console.log(year)
+    
+    //get certificate from data
+    let cert = answerDict['rating'];
+    console.log(cert)
+
+
+    //display metadata 
+    d3.select('#metadisplay').html(`<p>The film was rated ${cert} upon it's release in ${year}.`);
+
+
+}
+
 function megahint(){
     // replace the contents of the main panel with the COMPLETE list
     
@@ -491,6 +511,8 @@ function init(endless_mode, index){
     x.style.display = 'none'; 
     x = document.getElementById("replay");
     x.style.display = 'none'; 
+    x = document.getElementById("meta");
+    x.style.display = 'visible'; 
 
     
     // tag_curve(guess_counter_list, cumulative_tags, guess_list);
