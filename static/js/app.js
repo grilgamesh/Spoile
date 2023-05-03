@@ -313,7 +313,7 @@ function meta(){
     console.log("metadata revealed")
     //hide this function
     x = document.getElementById("meta");
-    x.style.display = 'hidden'; 
+    x.style.display = 'none'; 
     // get year from title
     let year = key.substring(key.length-5, key.length-1)
     console.log(year)
@@ -488,6 +488,7 @@ function init(endless_mode, index){
 
     d3.select('#guesses').html("<p></p>");
     d3.select('#keywords').html(format_keywords(answer_tags));
+    d3.select('#metadisplay').html("<p></p>");
 
     // hide all of the answer tags; they will be revealed as guesses are made.
     for (i=0; i<answer_tags.length; i++){

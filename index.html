@@ -52,10 +52,10 @@
                 <input type="text" class="form-control " placeholder="Guess a movie" aria-label="guess input" id="guessInput" aria-describedby="basic-addon2" onchange="guessed(this.value)">
                 <button class="btn btn-outline-secondary" type="button" id="guessClick" onclick="guessed(guessInput.value)">Guess</button>
                 <button class="btn btn-outline-secondary" type="button" id="hint" onclick="hint()">Random</button>
+                <button class="btn btn-outline-secondary" type="button" id="meta" onclick="meta()">Reveal Metadata</button>
                 <button class="btn btn-outline-secondary" type="button" id="spoil" onclick="megahint()">Reveal Tags</button>
                 <button class="btn btn-outline-secondary" type="button" id="quit" onclick="quit()">Give up</button>
                 <button class="btn btn-outline-secondary" type="button" id="replay" onclick="init(true)">Play again in endless mode</button>
-                <button class="btn btn-outline-secondary" type="button" id="meta" onclick="meta()">Reveal Metadata</button>
             </div>
             <div class="col-md-3">
                 <div id="proximity" class="panel panel-primary">
