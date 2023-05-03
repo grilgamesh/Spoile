@@ -315,7 +315,7 @@ function meta(){
     x = document.getElementById("meta");
     x.style.display = 'none'; 
     // get year from title
-    let year = key.substring(key.length-6, key.length)
+    let year = key.substring(key.length-5, key.length-1)
     console.log(year)
     
     //get certificate from data
