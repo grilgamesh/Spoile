@@ -313,7 +313,7 @@ function meta(){
     console.log("metadata revealed")
     //hide this function
     x = document.getElementById("meta");
-    x.style.display = 'none'; 
+    x.style.display = 'hidden'; 
     // get year from title
     let year = key.substring(key.length-5, key.length-1)
     console.log(year)
